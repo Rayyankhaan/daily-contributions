@@ -1,0 +1,28 @@
+name: Daily Auto Contributions
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+jobs:
+  contribute:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update file
+        run: |
+          echo "Update at $(date)" >> activity.log
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "YOUR_GITHUB_USERNAME"
+          git config --global user.email "YOUR_GITHUB_EMAIL"
+          git add activity.log
+          git commit -m "Automated daily contribution" || echo "No changes"
+
+      - name: Push
+        run: git push
