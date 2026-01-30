@@ -2,27 +2,31 @@ name: Daily Auto Contributions
 
 on:
   schedule:
-    - cron: "0 1 * * *"
-    - cron: "0 13 * * *"
+    - cron: "0 1 * * *"    # 06:30 IST
+    - cron: "0 13 * * *"   # 18:30 IST
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   contribute:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Update file
+      - name: Update activity log
         run: |
-          echo "Update at $(date)" >> activity.log
+          echo "Update at $(date -u)" >> activity.log
 
       - name: Commit changes
         run: |
           git config --global user.name "Rayyankhaan"
           git config --global user.email "143524922+Rayyankhaan@users.noreply.github.com"
           git add activity.log
-          git commit -m "Automated daily contribution" || echo "No changes"
+          git commit -m "chore: automated daily activity" || echo "No changes"
 
-      - name: Push
+      - name: Push changes
         run: git push
