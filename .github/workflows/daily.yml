@@ -3,7 +3,11 @@ name: Daily Auto Contributions
 on:
   schedule:
     - cron: "0 1 * * *"    # 06:30 IST
+    - cron: "0 4 * * *"    # 09:30 IST
+    - cron: "0 7 * * *"    # 12:30 IST
+    - cron: "0 10 * * *"   # 15:30 IST
     - cron: "0 13 * * *"   # 18:30 IST
+    - cron: "0 16 * * *"   # 21:30 IST
   workflow_dispatch:
 
 permissions:
@@ -16,17 +20,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Update activity log
         run: |
-          echo "Update at $(date -u)" >> activity.log
+          echo "Update at $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> activity.log
 
       - name: Commit changes
         run: |
-          git config --global user.name "Rayyankhaan"
-          git config --global user.email "143524922+Rayyankhaan@users.noreply.github.com"
+          git config user.name "Rayyankhaan"
+          git config user.email "143524922+Rayyankhaan@users.noreply.github.com"
           git add activity.log
-          git commit -m "chore: automated daily activity" || echo "No changes"
+          git diff --cached --quiet || git commit -m "chore: automated daily activity"
 
       - name: Push changes
         run: git push
